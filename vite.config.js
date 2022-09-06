@@ -7,6 +7,9 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, "src/main.ts"),
       },
+      output: {
+        entryFileNames: "[name].js"
+      }
     },
   },
 });
