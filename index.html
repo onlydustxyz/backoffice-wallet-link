@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test retool</title>
+
+    <script
+      src="https://unpkg.com/react@16/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="/dist/retool-components.umd.js"></script>
+    <script>
+      const wrapComponent = (WrappedComponent, modelInit = {}) => {
+        return () => {
+          const [model, setModel] = React.useState(modelInit);
+          const triggerQuery = (queryName) => {
+            console.log("Trigger query " + queryName);
+          };
+          const modelUpdate = (data) => {
+            setModel((currentModel) => {
+              return {
+                ...currentModel,
+                ...data,
+              };
+            });
+          };
+
+          return React.createElement(WrappedComponent, {
+            model,
+            triggerQuery,
+            modelUpdate,
+          });
+        };
+      };
+
+      ReactDOM.render(
+        React.createElement(
+          wrapComponent(RetoolComponents.AssignContribution, { name: "laurent" })
+        ),
+        document.getElementById("root")
+      );
+    </script>
+  </body>
+</html>
