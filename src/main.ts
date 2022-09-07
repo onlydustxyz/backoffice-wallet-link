@@ -13,7 +13,7 @@ const connect = async (contractAddress: any) => {
   );
   contract.connect(starknet.account);
   retool.updateModel({
-    connect: false,
+    pendingAction: "",
     account,
     chainId: starknet.account.chainId,
   });
@@ -25,7 +25,7 @@ const createContribution = async (
   gate: string
 ) => {
   await contract.new_contribution(projectId, issueNumber, gate);
-  retool.updateModel({ createContribution: false });
+  retool.updateModel({ pendingAction: "" });
 };
 
 const assignContribution = async (
@@ -36,33 +36,43 @@ const assignContribution = async (
     [contributionId],
     [contributorId, ""]
   );
-  retool.updateModel({ assignContribution: false });
+  retool.updateModel({ pendingAction: "" });
+};
+
+const validateContribution = async (contributionId: string) => {
+  await contract.validate_contribution([contributionId]);
+  retool.updateModel({ pendingAction: "" });
 };
 
 export const retoolSubscription = async (model: any) => {
   if (
     starknet &&
-    (starknet.isConnected || model.connect) &&
+    (starknet.isConnected || model.pendingAction === "connect") &&
     model.account === false
   ) {
     await connect(model.contractAddress);
     return;
   }
 
-  if (model.createContribution) {
+  if (model.pendingAction === "createContribution") {
     await createContribution(
-      model.projectId.toString(),
-      model.issueNumber.toString(),
-      model.gate.toString()
+      model.create.projectId.toString(),
+      model.create.issueNumber.toString(),
+      model.create.gate.toString()
     );
     return;
   }
 
-  if (model.assignContribution) {
+  if (model.pendingAction === "assignContribution") {
     await assignContribution(
-      model.contributionToAssign.toString(),
-      model.contributorToAssign.toString()
+      model.assign.contributionId.toString(),
+      model.assign.contributorId.toString()
     );
+    return;
+  }
+
+  if (model.pendingAction === "validateContribution") {
+    await validateContribution(model.validate.contributionId.toString());
     return;
   }
 };
