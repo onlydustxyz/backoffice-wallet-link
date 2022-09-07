@@ -1,35 +1,28 @@
 import { Abi, Contract } from "starknet";
 import contributionsAbi from "./contributions.json";
-
-declare global {
-  interface Window {
-    Retool: any;
-    connect: any;
-    starknet_braavos?: any;
-  }
-}
+import { retool, starknet } from "./libraries";
 
 let contract: Contract;
 
 const connect = async (contractAddress: any) => {
-  const [account] = await window.starknet_braavos.enable();
+  const [account] = await starknet.enable();
   contract = new Contract(
     contributionsAbi as Abi,
     contractAddress,
-    window.starknet_braavos.provider
+    starknet.provider
   );
-  contract.connect(window.starknet_braavos.account);
-  window.Retool.updateModel({
+  contract.connect(starknet.account);
+  retool.updateModel({
     connect: false,
     account,
-    chainId: window.starknet_braavos.account.chainId,
+    chainId: starknet.account.chainId,
   });
 };
 
-window.Retool.subscribe(async (model: any) => {
+export const retoolSubscription = async (model: any) => {
   if (
-    window.starknet_braavos &&
-    (window.starknet_braavos.isConnected || model.connect) &&
+    starknet &&
+    (starknet.isConnected || model.connect) &&
     model.account === false
   ) {
     await connect(model.contractAddress);
@@ -42,6 +35,8 @@ window.Retool.subscribe(async (model: any) => {
       model.issueNumber.toString(),
       model.gate.toString()
     );
-    window.Retool.updateModel({ createContribution: false });
+    retool.updateModel({ createContribution: false });
   }
-});
+};
+
+retool.subscribe(retoolSubscription);
