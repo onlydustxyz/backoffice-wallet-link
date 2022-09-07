@@ -19,6 +19,26 @@ const connect = async (contractAddress: any) => {
   });
 };
 
+const createContribution = async (
+  projectId: string,
+  issueNumber: string,
+  gate: string
+) => {
+  await contract.new_contribution(projectId, issueNumber, gate);
+  retool.updateModel({ createContribution: false });
+};
+
+const assignContribution = async (
+  contributionId: string,
+  contributorId: string
+) => {
+  await contract.assign_contributor_to_contribution(
+    [contributionId],
+    [contributorId, ""]
+  );
+  retool.updateModel({ assignContribution: false });
+};
+
 export const retoolSubscription = async (model: any) => {
   if (
     starknet &&
@@ -30,13 +50,21 @@ export const retoolSubscription = async (model: any) => {
   }
 
   if (model.createContribution) {
-    await contract.new_contribution(
+    await createContribution(
       model.projectId.toString(),
       model.issueNumber.toString(),
       model.gate.toString()
     );
-    retool.updateModel({ createContribution: false });
+    return;
+  }
+
+  if (model.assignContribution) {
+    await assignContribution(
+      model.contributionToAssign.toString(),
+      model.contributorToAssign.toString()
+    );
+    return;
   }
 };
 
-retool.subscribe(retoolSubscription);
+retool && retool.subscribe(retoolSubscription);
