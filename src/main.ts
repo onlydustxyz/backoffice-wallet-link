@@ -45,11 +45,7 @@ const validateContribution = async (contributionId: string) => {
 };
 
 export const retoolSubscription = async (model: any) => {
-  if (
-    starknet &&
-    (starknet.isConnected || model.pendingAction === "connect") &&
-    model.account === false
-  ) {
+  if (starknet && model.pendingAction === "connect") {
     await connect(model.contractAddress);
     retool.triggerQuery(model.onConnectCallback);
     return;
