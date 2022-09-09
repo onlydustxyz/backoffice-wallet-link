@@ -51,6 +51,7 @@ export const retoolSubscription = async (model: any) => {
     model.account === false
   ) {
     await connect(model.contractAddress);
+    retool.triggerQuery(model.onConnectCallback);
     return;
   }
 

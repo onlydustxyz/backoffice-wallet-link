@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 const retoolMock = {
   updateModel: vi.fn(),
   subscribe: vi.fn(),
+  triggerQuery: vi.fn(),
 };
 const starknetMock = {
   enable: vi.fn().mockResolvedValue([]),
@@ -23,7 +24,8 @@ describe("connect action", () => {
   });
 
   it("triggers the connection when wallet is not connected", async () => {
-    await retoolSubscription({ connect: true, account: false });
+    await retoolSubscription({ pendingAction: "connect", account: false });
     expect(starknetMock.enable).toBeCalledTimes(1);
+    expect(retoolMock.triggerQuery).toBeCalledTimes(1);
   });
 });
