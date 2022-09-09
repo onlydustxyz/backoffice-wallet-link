@@ -8,9 +8,10 @@ declare global {
       triggerQuery: Function;
     };
     starknet_braavos: IStarknetWindowObject;
+    starknet: IStarknetWindowObject;
   }
 }
 
-export const starknet = window.starknet_braavos;
+export const starknet = window.starknet_braavos || window.starknet;
 
 export const retool = window.Retool;
