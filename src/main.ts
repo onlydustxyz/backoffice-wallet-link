@@ -44,6 +44,16 @@ const validateContribution = async (contributionId: string) => {
   retool.updateModel({ pendingAction: "" });
 };
 
+const addMember = async (projectId: string, contributorAccount: string) => {
+  await contract.add_member_for_project(projectId, contributorAccount);
+  retool.updateModel({ pendingAction: "" });
+};
+
+const removeMember = async (projectId: string, contributorAccount: string) => {
+  await contract.remove_member_for_project(projectId, contributorAccount);
+  retool.updateModel({ pendingAction: "" });
+};
+
 export const retoolSubscription = async (model: any) => {
   if (starknet && model.pendingAction === "connect") {
     await connect(model.contractAddress);
@@ -70,6 +80,22 @@ export const retoolSubscription = async (model: any) => {
 
   if (model.pendingAction === "validateContribution") {
     await validateContribution(model.validate.contributionId.toString());
+    return;
+  }
+
+  if (model.pendingAction === "addMember") {
+    await addMember(
+      model.addMember.projectId.toString(),
+      model.addMember.contributorAccount
+    );
+    return;
+  }
+
+  if (model.pendingAction === "removeMember") {
+    await removeMember(
+      model.removeMember.projectId.toString(),
+      model.removeMember.contributorAccount
+    );
     return;
   }
 };
