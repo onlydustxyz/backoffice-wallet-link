@@ -5,6 +5,7 @@ declare global {
     Retool: {
       subscribe: Function;
       updateModel: Function;
+      triggerQuery: Function;
     };
     starknet_braavos: IStarknetWindowObject;
   }
