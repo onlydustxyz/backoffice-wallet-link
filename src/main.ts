@@ -30,17 +30,23 @@ const createContribution = async (
 
 const assignContribution = async (
   contributionId: string,
-  contributorId: string
+  contributorAccountAddress: string
 ) => {
   await contract.assign_contributor_to_contribution(
     [contributionId],
-    [contributorId, ""]
+    [contributorAccountAddress]
   );
   retool.updateModel({ pendingAction: "" });
 };
 
-const validateContribution = async (contributionId: string) => {
-  await contract.validate_contribution([contributionId]);
+const validateContribution = async (
+  contributionId: string,
+  contributorAccountAddress: string
+) => {
+  await contract.validate_contribution(
+    [contributionId],
+    [contributorAccountAddress]
+  );
   retool.updateModel({ pendingAction: "" });
 };
 
@@ -73,13 +79,16 @@ export const retoolSubscription = async (model: any) => {
   if (model.pendingAction === "assignContribution") {
     await assignContribution(
       model.assign.contributionId.toString(),
-      model.assign.contributorId.toString()
+      model.assign.contributorAccountAddress.toString()
     );
     return;
   }
 
   if (model.pendingAction === "validateContribution") {
-    await validateContribution(model.validate.contributionId.toString());
+    await validateContribution(
+      model.validate.contributionId.toString(),
+      model.validate.contributorAccountAddress.toString()
+    );
     return;
   }
 

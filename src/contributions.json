@@ -19,18 +19,6 @@
     {
         "members": [
             {
-                "name": "inner",
-                "offset": 0,
-                "type": "felt"
-            }
-        ],
-        "name": "ContributionId",
-        "size": 1,
-        "type": "struct"
-    },
-    {
-        "members": [
-            {
                 "name": "id",
                 "offset": 0,
                 "type": "ContributionId"
@@ -58,6 +46,18 @@
         ],
         "name": "Contribution",
         "size": 6,
+        "type": "struct"
+    },
+    {
+        "members": [
+            {
+                "name": "inner",
+                "offset": 0,
+                "type": "felt"
+            }
+        ],
+        "name": "ContributionId",
+        "size": 1,
         "type": "struct"
     },
     {
@@ -201,6 +201,17 @@
         ],
         "keys": [],
         "name": "ProjectMemberRemoved",
+        "type": "event"
+    },
+    {
+        "data": [
+            {
+                "name": "contract_address",
+                "type": "felt"
+            }
+        ],
+        "keys": [],
+        "name": "ContributionDeployed",
         "type": "event"
     },
     {
@@ -390,106 +401,15 @@
     {
         "inputs": [
             {
-                "name": "contribution_id",
-                "type": "ContributionId"
-            }
-        ],
-        "name": "contribution",
-        "outputs": [
-            {
-                "name": "contribution",
-                "type": "Contribution"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "contributor_id",
-                "type": "Uint256"
-            }
-        ],
-        "name": "past_contributions",
-        "outputs": [
-            {
-                "name": "num_contributions",
+                "name": "contributor_account",
                 "type": "felt"
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "all_contributions",
+        "name": "past_contribution_count",
         "outputs": [
             {
-                "name": "contributions_len",
+                "name": "count",
                 "type": "felt"
-            },
-            {
-                "name": "contributions",
-                "type": "Contribution*"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "all_open_contributions",
-        "outputs": [
-            {
-                "name": "contributions_len",
-                "type": "felt"
-            },
-            {
-                "name": "contributions",
-                "type": "Contribution*"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "contributor_id",
-                "type": "Uint256"
-            }
-        ],
-        "name": "assigned_contributions",
-        "outputs": [
-            {
-                "name": "contributions_len",
-                "type": "felt"
-            },
-            {
-                "name": "contributions",
-                "type": "Contribution*"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "name": "contributor_id",
-                "type": "Uint256"
-            }
-        ],
-        "name": "eligible_contributions",
-        "outputs": [
-            {
-                "name": "contributions_len",
-                "type": "felt"
-            },
-            {
-                "name": "contributions",
-                "type": "Contribution*"
             }
         ],
         "stateMutability": "view",
@@ -559,8 +479,8 @@
                 "type": "ContributionId"
             },
             {
-                "name": "contributor_id",
-                "type": "Uint256"
+                "name": "contributor_account_address",
+                "type": "felt"
             }
         ],
         "name": "assign_contributor_to_contribution",
@@ -572,6 +492,10 @@
             {
                 "name": "contribution_id",
                 "type": "ContributionId"
+            },
+            {
+                "name": "contributor_account_address",
+                "type": "felt"
             }
         ],
         "name": "unassign_contributor_from_contribution",
@@ -598,6 +522,10 @@
             {
                 "name": "contribution_id",
                 "type": "ContributionId"
+            },
+            {
+                "name": "contributor_account_address",
+                "type": "felt"
             }
         ],
         "name": "validate_contribution",
@@ -677,6 +605,40 @@
         ],
         "name": "remove_member_for_project",
         "outputs": [],
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "contributor_account",
+                "type": "felt"
+            }
+        ],
+        "name": "is_lead_contributor",
+        "outputs": [
+            {
+                "name": "res",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "contributor_account",
+                "type": "felt"
+            }
+        ],
+        "name": "is_member",
+        "outputs": [
+            {
+                "name": "res",
+                "type": "felt"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     }
 ]
