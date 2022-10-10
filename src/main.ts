@@ -34,7 +34,7 @@ const assignContribution = async (
 ) => {
   await contract.assign_contributor_to_contribution(
     [contributionId],
-    [contributorAccountAddress]
+    contributorAccountAddress
   );
   retool.updateModel({ pendingAction: "" });
 };
@@ -45,7 +45,7 @@ const validateContribution = async (
 ) => {
   await contract.validate_contribution(
     [contributionId],
-    [contributorAccountAddress]
+    contributorAccountAddress
   );
   retool.updateModel({ pendingAction: "" });
 };
