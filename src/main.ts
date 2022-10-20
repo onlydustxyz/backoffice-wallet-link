@@ -33,6 +33,15 @@ const createContribution = async (
   retool.updateModel({ pendingAction: "" });
 };
 
+const deleteContribution = async (
+  contributionId: string,
+  contractAddress: string
+) => {
+  const contract = getContract(contractAddress);
+  await contract.delete_contribution([contributionId]);
+  retool.updateModel({ pendingAction: "" });
+};
+
 const assignContribution = async (
   contributionId: string,
   contributorAccountAddress: string,
@@ -40,6 +49,19 @@ const assignContribution = async (
 ) => {
   const contract = getContract(contractAddress);
   await contract.assign_contributor_to_contribution(
+    [contributionId],
+    contributorAccountAddress
+  );
+  retool.updateModel({ pendingAction: "" });
+};
+
+const unassignContribution = async (
+  contributionId: string,
+  contributorAccountAddress: string,
+  contractAddress: string
+) => {
+  const contract = getContract(contractAddress);
+  await contract.unassign_contributor_from_contribution(
     [contributionId],
     contributorAccountAddress
   );
@@ -97,10 +119,27 @@ export const retoolSubscription = async (model: any) => {
     return;
   }
 
+  if (model.pendingAction === "deleteContribution") {
+    await deleteContribution(
+      model.delete.contributionId.toString(),
+      model.contractAddress
+    );
+    return;
+  }
+
   if (model.pendingAction === "assignContribution") {
     await assignContribution(
       model.assign.contributionId.toString(),
       model.assign.contributorAccountAddress.toString(),
+      model.contractAddress
+    );
+    return;
+  }
+
+  if (model.pendingAction === "unassignContribution") {
+    await unassignContribution(
+      model.unassign.contributionId.toString(),
+      model.unassign.contributorAccountAddress.toString(),
       model.contractAddress
     );
     return;
